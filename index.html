@@ -16,52 +16,241 @@
       --border: #4c4f69;
       --muted: #9ca3af;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
       color: var(--text);
       background: linear-gradient(135deg, var(--bg-top), var(--bg-mid) 50%, var(--bg-bot));
-      min-height:100vh;
+      min-height: 100vh;
     }
     .container {
-      max-width:1100px;
+      max-width: 1100px;
       margin: auto;
-      padding:20px;
+      padding: 20px;
     }
     header {
-      text-align:center;
-      margin-bottom:30px;
+      text-align: center;
+      margin-bottom: 30px;
     }
     .logo {
-      width:80px;
-      height:80px;
-      margin:0 auto 10px;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 10px;
       background: url('maple-leaf.svg') center/contain no-repeat;
       filter: drop-shadow(0 0 15px var(--maple-accent));
     }
     h1 {
-      font-size:2.5rem;
+      font-size: 2.5rem;
       background: linear-gradient(135deg, var(--maple-primary), var(--maple-secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    #connectSection, #userInfo {
-      max-width:360px;
-      margin:15px auto;
+    #connectSection,
+    #userInfo {
+      max-width: 360px;
+      margin: 15px auto;
     }
     input[type=password] {
-      width:100%; padding:12px; border-radius:6px;
-      border:1px solid var(--border);
-      background:rgba(30,26,46,0.8);
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: rgba(30, 26, 46, 0.8);
       color: var(--text);
     }
     button {
-      width:100%; margin-top:10px;
-      padding:12px; border:none; border-radius:6px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
       background: linear-gradient(135deg, var(--maple-primary), var(--maple-secondary));
-      color:#fff; font-weight:600; cursor:pointer;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
       transition: transform .2s, box-shadow .2s;
     }
     button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px var
+      box-shadow: 0 4px 12px var(--maple-accent);
+    }
+    .status {
+      margin-top: 10px;
+      font-size: .9rem;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-top: 30px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .3s;
+    }
+    .tab-btn.active {
+      color: var(--maple-primary);
+      border-bottom: 3px solid var(--maple-primary);
+      background: var(--maple-accent);
+    }
+    .tab-content {
+      display: none;
+      padding: 20px 0;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .card {
+      background: linear-gradient(145deg, #1e1a2e, #2a1f3d);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    @media (max-width: 768px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo"></div>
+      <h1>🍁 Maple Panel</h1>
+    </header>
+
+    <!-- TOKEN CONNECT -->
+    <div id="connectSection">
+      <input id="tokenInput" type="password" placeholder="Discord Token"/>
+      <button onclick="connect()">Connect</button>
+      <div id="connectStatus" class="status"></div>
+    </div>
+
+    <!-- USER INFO -->
+    <div id="userInfo" class="status" style="display:none;"></div>
+
+    <!-- TABS -->
+    <nav class="tabs" id="tabs" style="display:none;">
+      <button class="tab-btn active" data-tab="serversTab">Servers & Channels</button>
+      <button class="tab-btn" data-tab="multiTab">Multi-Channel</button>
+      <button class="tab-btn" data-tab="replyTab">Auto-Reply</button>
+    </nav>
+
+    <!-- SERVERS & CHANNELS -->
+    <section id="serversTab" class="tab-content active">
+      <div class="two-col">
+        <div class="card">
+          <h3>Servers</h3>
+          <div id="serverList">Loading…</div>
+        </div>
+        <div class="card">
+          <h3>Send Message</h3>
+          <textarea id="msgInput" rows="4" placeholder="Your message…"></textarea>
+          <div class="two-col">
+            <input id="msgCount" type="number" value="1" min="1" />
+            <input id="msgDelay" type="number" value="1" step="0.1" min="0" />
+          </div>
+          <button onclick="sendMessage()" id="sendBtn" disabled>Send</button>
+          <div id="msgStatus" class="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MULTI-CHANNEL -->
+    <section id="multiTab" class="tab-content">
+      <div class="card">
+        <h3>Multi-Channel Broadcast</h3>
+        <div id="selectedChannels" style="margin-bottom:10px;color:#999;">No channels selected</div>
+        <button onclick="selectChannels()">Select Channels</button>
+        <div class="two-col" style="margin-top:15px;">
+          <input id="waveCount" type="number" value="1" min="1" max="10" placeholder="Waves" />
+          <input id="multiplier" type="number" value="1" min="1" placeholder="Multiplier" />
+        </div>
+        <button onclick="broadcast()">Start Broadcast</button>
+        <div id="broadcastStatus" class="status"></div>
+      </div>
+    </section>
+
+    <!-- AUTO-REPLY -->
+    <section id="replyTab" class="tab-content">
+      <div class="card">
+        <h3>Auto-Reply</h3>
+        <label><input id="autoReplyToggle" type="checkbox" /> Enable</label>
+        <textarea id="autoReplyMsgs" rows="4" placeholder="One reply per line…"></textarea>
+        <button onclick="updateAutoReply()">Update</button>
+        <div id="replyStatus" class="status"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Simulated connect → show user info + tabs
+    function connect() {
+      const t = tokenInput.value.trim();
+      if (!t) {
+        connectStatus.textContent = 'Please enter a token';
+        return;
+      }
+      connectStatus.textContent = 'Connecting…';
+      setTimeout(() => {
+        const user = { username: 'ichigo_j99', id: '864580331729059915' };
+        connectSection.style.display = 'none';
+        userInfo.textContent = `Connected as: ${user.username} (${user.id})`;
+        userInfo.style.display = 'block';
+        tabs.style.display = 'flex';
+        loadServers();
+      }, 800);
+    }
+
+    // Servers stub
+    function loadServers() {
+      serverList.innerHTML = '<p style="color:#999;">(stub) no servers</p>';
+    }
+
+    // Send message stub
+    function sendMessage() {
+      msgStatus.textContent = 'Sending…';
+      setTimeout(() => msgStatus.textContent = 'Sent!', 500);
+    }
+
+    // Channel selection + broadcast stubs
+    function selectChannels() {
+      selectedChannels.textContent = '#general, #bot-spam';
+    }
+    function broadcast() {
+      broadcastStatus.textContent = 'Broadcasting…';
+      setTimeout(() => broadcastStatus.textContent = 'Done!', 800);
+    }
+
+    // Auto-reply stub
+    function updateAutoReply() {
+      replyStatus.textContent = 'Auto-reply updated.';
+    }
+  </script>
+</body>
+</html>
