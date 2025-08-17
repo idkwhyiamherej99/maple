@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🍁 Maple Panel</title>
+  <style>
+    :root {
+      --maple-primary: #9d4edd;
+      --maple-secondary: #7209b7;
+      --maple-accent: rgba(157, 78, 221, 0.3);
+      --bg-top: #1a0d2e;
+      --bg-mid: #16213e;
+      --bg-bot: #0f0f23;
+      --text: #e4e6ea;
+      --border: #4c4f69;
+      --muted: #9ca3af;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-top), var(--bg-mid) 50%, var(--bg-bot));
+      min-height:100vh;
+    }
+    .container {
+      max-width:1100px;
+      margin: auto;
+      padding:20px;
+    }
+    header {
+      text-align:center;
+      margin-bottom:30px;
+    }
+    .logo {
+      width:80px;
+      height:80px;
+      margin:0 auto 10px;
+      background: url('maple-leaf.svg') center/contain no-repeat;
+      filter: drop-shadow(0 0 15px var(--maple-accent));
+    }
+    h1 {
+      font-size:2.5rem;
+      background: linear-gradient(135deg, var(--maple-primary), var(--maple-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    #connectSection, #userInfo {
+      max-width:360px;
+      margin:15px auto;
+    }
+    input[type=password] {
+      width:100%; padding:12px; border-radius:6px;
+      border:1px solid var(--border);
+      background:rgba(30,26,46,0.8);
+      color: var(--text);
+    }
+    button {
+      width:100%; margin-top:10px;
+      padding:12px; border:none; border-radius:6px;
+      background: linear-gradient(135deg, var(--maple-primary), var(--maple-secondary));
+      color:#fff; font-weight:600; cursor:pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var
